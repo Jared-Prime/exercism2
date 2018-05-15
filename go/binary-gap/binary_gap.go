@@ -2,29 +2,46 @@ package binarygap
 
 // LongestZeros finds the longest sequence of zeros in a binary representation of an integer
 func LongestZeros(n int) int {
-	var initial, maximum int
+	var count, maximum int
 
-	_, _, maximum = recur(n, initial, maximum)
+	if isEven(n) {
+		n, _ = removeTrailingZeros(n)
+	}
+
+	for isPositive(n) {
+		n >>= 1
+
+		if isEven(n) {
+			n, count = removeTrailingZeros(n)
+
+			if count > maximum {
+				maximum = count
+			}
+		}
+	}
 
 	return maximum
 }
 
-func recur(n, count, maximum int) (int, int, int) {
-	if n < 2 {
-		return n, count, maximum
+func removeTrailingZeros(n int) (int, int) {
+	var removed int
+
+	for isPositiveAndEven(n) {
+		n >>= 1
+		removed++
 	}
 
-	if n%2 == 0 {
-		count++
-	} else {
-		count = 0
-	}
+	return n, removed
+}
 
-	n = n >> 1
+func isPositiveAndEven(n int) bool {
+	return isPositive(n) && isEven(n)
+}
 
-	if maximum <= count {
-		maximum = count
-	}
+func isEven(n int) bool {
+	return n&1 == 0
+}
 
-	return recur(n, count, maximum)
+func isPositive(n int) bool {
+	return n > 0
 }
